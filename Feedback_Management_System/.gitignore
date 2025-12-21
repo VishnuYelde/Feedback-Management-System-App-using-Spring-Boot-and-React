@@ -1,33 +1,58 @@
-HELP.md
-target/
-.mvn/wrapper/maven-wrapper.jar
-!**/src/main/**/target/
-!**/src/test/**/target/
+# ===============================
+# Sensitive Configuration Files
+# ===============================
 
-### STS ###
-.apt_generated
+# Ignore application config with secrets
+application.properties
+application.yml
+application-*.properties
+application-*.yml
+
+# Environment variables
+.env
+
+# ===============================
+# Build & Target Files
+# ===============================
+
+/target/
+/build/
+
+# ===============================
+# Logs
+# ===============================
+
+*.log
+
+# ===============================
+# IDE / OS Files
+# ===============================
+
+# Eclipse / STS
 .classpath
-.factorypath
 .project
-.settings
-.springBeans
-.sts4-cache
+.settings/
 
-### IntelliJ IDEA ###
-.idea
-*.iws
+# IntelliJ IDEA
+.idea/
 *.iml
-*.ipr
 
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
-build/
-!**/src/main/**/build/
-!**/src/test/**/build/
-
-### VS Code ###
+# VS Code
 .vscode/
+
+# Mac / Windows
+.DS_Store
+Thumbs.db
+
+# ===============================
+# Maven Wrapper
+# ===============================
+
+.mvn/wrapper/maven-wrapper.jar
+
+# ===============================
+# Test Reports
+# ===============================
+
+/surefire-reports/
+/failsafe-reports/
