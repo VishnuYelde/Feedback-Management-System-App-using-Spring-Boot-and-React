@@ -100,14 +100,6 @@
 			<version>0.11.5</version>
 			<scope>runtime</scope>
 		</dependency>
-		
-		<!-- Added Lombok Dependency(saves boilerplate)-->
-		<dependency>
-			<groupId>org.projectlombok</groupId>
-			<artifactId>lombok</artifactId>
-			<optional>true</optional>
-		</dependency>
-
 
 	</dependencies>
 
