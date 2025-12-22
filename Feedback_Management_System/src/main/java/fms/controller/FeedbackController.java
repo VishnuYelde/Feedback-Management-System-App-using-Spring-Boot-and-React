@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import fms.entity.Feedback;
 import fms.entity.User;
+import fms.exception.ResourceNotFoundException;
 import fms.repository.FeedbackRepository;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -48,7 +49,7 @@ public class FeedbackController {
 		User loggedInUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
 		Feedback feedback = feedbackRepository.findById(id)
-				.orElseThrow(() -> new RuntimeException("Feedback not found"));
+				.orElseThrow(() -> new ResourceNotFoundException("Feedback not found"));
 
 		// Ownership check
 		if (!feedback.getUser().getId().equals(loggedInUser.getId())) {
@@ -66,7 +67,7 @@ public class FeedbackController {
 		User loggedInUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
 		Feedback existingFeedback = feedbackRepository.findById(id)
-				.orElseThrow(() -> new RuntimeException("Feedback not found"));
+				.orElseThrow(() -> new ResourceNotFoundException("Feedback not found"));
 
 		// Ownership check
 		if (!existingFeedback.getUser().getId().equals(loggedInUser.getId())) {
