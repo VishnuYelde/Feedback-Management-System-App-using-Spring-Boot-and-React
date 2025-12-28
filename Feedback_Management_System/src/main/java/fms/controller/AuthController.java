@@ -14,7 +14,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/auth")
-@CrossOrigin
+//@CrossOrigin
 public class AuthController {
 
 	@Autowired
@@ -54,15 +54,27 @@ public class AuthController {
 	@PostMapping("/login")
 	public Map<String, String> login(@RequestBody User user) {
 
-		User dbUser = userRepository.findByEmail(user.getEmail())
-				.orElseThrow(() -> new RuntimeException("User not found"));
+	    User dbUser = userRepository.findByEmail(user.getEmail())
+	            .orElseThrow(() -> new RuntimeException("User not found"));
 
-		if (!passwordEncoder.matches(user.getPassword(), dbUser.getPassword())) {
-			throw new RuntimeException("Invalid credentials");
-		}
+	    if (!passwordEncoder.matches(user.getPassword(), dbUser.getPassword())) {
+	        throw new RuntimeException("Invalid credentials");
+	    }
 
-		String token = jwtUtil.generateToken(dbUser.getEmail());
+	    String role = dbUser.getRoles()
+	            .stream()
+	            .findFirst()
+	            .map(Role::getRoleName)
+	            .orElse("USER");
 
-		return Map.of("token", token);
+	    String token = jwtUtil.generateToken(dbUser.getEmail(), role);
+
+	    return Map.of(
+	            "token", token,
+	            "email", dbUser.getEmail(),
+	            "role", role
+	    );
 	}
+
+
 }

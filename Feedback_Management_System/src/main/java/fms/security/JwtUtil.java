@@ -20,14 +20,18 @@ public class JwtUtil {
     }
 
     // Generate JWT Token
-    public String generateToken(String email) {
+    public String generateToken(String email, String role) {
         return Jwts.builder()
-                .setSubject(email)
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
-                .signWith(getSigningKey())
-                .compact();
+            .setSubject(email)              // sub
+            .claim("role", role)            // custom claim
+            .setIssuedAt(new Date())        // iat
+            .setExpiration(
+                new Date(System.currentTimeMillis() + EXPIRATION_TIME)
+            )
+            .signWith(getSigningKey())
+            .compact();
     }
+
 
     // Extract email from JWT
     public String extractEmail(String token) {
