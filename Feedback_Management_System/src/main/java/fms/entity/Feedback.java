@@ -19,28 +19,28 @@ public class Feedback {
 
 	private int rating;
 
-    @Column(nullable = false, updatable = false)
-    private LocalDateTime createdAt;
+	@Column(nullable = false, updatable = false)
+	private LocalDateTime createdAt;
 
-    private LocalDateTime updatedAt;
+	private LocalDateTime updatedAt;
 
 	@ManyToOne
 	@JoinColumn(name = "user_id", nullable = false)
 	private User user;
 
-	 // AUTO SET DATES ON INSERT
-    @PrePersist
-    protected void onCreate() {
-        this.createdAt = LocalDateTime.now();
-        this.updatedAt = LocalDateTime.now();
-    }
+	// AUTO SET DATES ON INSERT
+	@PrePersist
+	protected void onCreate() {
+		this.createdAt = LocalDateTime.now();
+		this.updatedAt = LocalDateTime.now();
+	}
 
-    // AUTO UPDATE DATE ON UPDATE
-    @PreUpdate
-    protected void onUpdate() {
-        this.updatedAt = LocalDateTime.now();
-    }
-	
+	// AUTO UPDATE DATE ON UPDATE
+	@PreUpdate
+	protected void onUpdate() {
+		this.updatedAt = LocalDateTime.now();
+	}
+
 	// getters & setters
 	public Long getId() {
 		return id;
@@ -84,6 +84,10 @@ public class Feedback {
 
 	public void setUser(User user) {
 		this.user = user;
+	}
+
+	public LocalDateTime getUpdatedAt() {
+		return updatedAt;
 	}
 
 }
