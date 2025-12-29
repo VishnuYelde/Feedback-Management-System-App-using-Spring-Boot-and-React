@@ -18,42 +18,51 @@ import java.io.IOException;
 @Component
 public class JwtAuthFilter extends OncePerRequestFilter {
 
-    @Autowired
-    private JwtUtil jwtUtil;
+	@Autowired
+	private JwtUtil jwtUtil;
 
-    @Autowired
-    private UserRepository userRepository;
+	@Autowired
+	private UserRepository userRepository;
 
-    @Override
-    protected void doFilterInternal(HttpServletRequest request,
-                                    HttpServletResponse response,
-                                    FilterChain filterChain)
-            throws ServletException, IOException {
+	@Override
+	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+			throws ServletException, IOException {
 
-        String authHeader = request.getHeader("Authorization");
+		String path = request.getRequestURI();
 
-        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+		// Skip auth APIs
+		if (path.startsWith("/api/auth")) {
+			filterChain.doFilter(request, response);
+			return;
+		}
 
-            String token = authHeader.substring(7);
-            String email = jwtUtil.extractEmail(token);
+		String authHeader = request.getHeader("Authorization");
 
-            if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+		if (authHeader != null && authHeader.startsWith("Bearer ")) {
+			String token = authHeader.substring(7);
 
-                User user = userRepository.findByEmail(email).orElse(null);
+			try {
+				String email = jwtUtil.extractEmail(token);
 
-                if (user != null) {
-                    UsernamePasswordAuthenticationToken authentication =
-                            new UsernamePasswordAuthenticationToken(user, null, null);
+				if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
-                    authentication.setDetails(
-                            new WebAuthenticationDetailsSource().buildDetails(request)
-                    );
+					User user = userRepository.findByEmail(email).orElse(null);
 
-                    SecurityContextHolder.getContext().setAuthentication(authentication);
-                }
-            }
-        }
+					if (user != null) {
+						UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(user, null,
+								null);
 
-        filterChain.doFilter(request, response);
-    }
+						auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+
+						SecurityContextHolder.getContext().setAuthentication(auth);
+					}
+				}
+			} catch (Exception e) {
+				response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+				return;
+			}
+		}
+
+		filterChain.doFilter(request, response);
+	}
 }
